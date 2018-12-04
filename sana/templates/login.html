@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from "form_macros.html" import render_field %}
+{% block content %}
+<form method = "post" action = "">
+  {{ form.hidden_tag() }}
+  <table>
+    {% if form.pno %}
+    {{ render_field(form.pno, size = 30) }}
+    {% endif %}
+
+    {% if form.firstname %}
+    {{ render_field(form.firstname, size = 30) }}
+    {% endif %}
+
+    {% if form.lastname %}
+    {{ render_field(form.lastname, size = 30) }}
+    {% endif %}
+
+    {% if form.password %}
+    {{ render_field(form.password, size = 30) }}
+    {% endif %}
+
+    {% if form.password2 %}
+    {{ render_field(form.password2, size = 30) }}
+    {% endif %}
+
+    {{ render_field(form.submit) }}
+  </table>
+</form>
+{% endblock %}
