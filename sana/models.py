@@ -1,7 +1,6 @@
 from sana import db
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
-from datetime import datetime
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key = True)
@@ -35,6 +34,7 @@ class Request(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     request_addr = db.Column(db.String(30), unique = True)
     attempts = db.Column(db.Integer, default = 1)
+    banned_until = db.Column(db.DateTime, nullable = True)
 
     def __repr__(self):
         return "{}: {}".format(self.request_addr, self.attempts)

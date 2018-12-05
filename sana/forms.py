@@ -5,7 +5,8 @@ from wtforms.validators import DataRequired, Regexp, EqualTo
 class PNOForm(FlaskForm):
     pno = StringField('Enter your phone number: ', validators = [DataRequired(),
                                                                  Regexp('[1-9][0-9]{11}',
-                                                                        message = 'Enter 12 digits')])
+                                                                        message = 'Enter 12 digits')],
+                                                                 render_kw = {'placeholder': '9891212345678'})
     submit = SubmitField('Login')
 
     def __repr__(self):
@@ -14,10 +15,12 @@ class PNOForm(FlaskForm):
 class NameForm(FlaskForm):
     firstname = StringField('Enter your first name: ', validators = [DataRequired(),
                                                                      Regexp('[a-zA-Z]+',
-                                                                            message = 'Only letters are accepted')])
+                                                                            message = 'Only letters are accepted')],
+                                                                     render_kw = {'placeholder': 'John'})
     lastname = StringField('Enter your last name: ', validators = [DataRequired(),
                                                                    Regexp('[a-zA-Z]+',
-                                                                          message = 'Only letters are accepted')])
+                                                                          message = 'Only letters are accepted')],
+                                                                   render_kw = {'placeholder': 'Kennedy'})
     submit = SubmitField('Login')
 
     def __repr__(self):

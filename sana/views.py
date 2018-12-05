@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from models import User, Request
 from . import db
 from random import randint
+import threading
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -19,6 +20,7 @@ def index():
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
+    # first check if this ip should be banned
     r = Request.query.filter_by(request_addr = request.remote_addr).first()
     if r == None:
         r = Request(request_addr = request.remote_addr)
@@ -26,14 +28,23 @@ def login():
         db.session.commit()
     else:
         r.attempts += 1
+        should_ban = True if r.attempts > 3 else False
+        if should_ban:
+            r.banned_until = datetime.now() + timedelta(hours = 1)
+
+            # remove the  ban after 1 hour
+            oneHourInSecond = 1 * 60 * 60
+            threading.Timer(oneHourInSecond, remove_ban, (request.remote_addr,)).start()
+
         db.session.add(r)
         db.session.commit()
-        if (r.attempts > 3):
-            abort(403)
 
+        if should_ban:
+            abort(403)
 
     if current_user.is_authenticated:
         return render_template(url_for('index'))
+
     form = PNOForm()
     if form.validate_on_submit():
         pno = form.pno.data
@@ -47,7 +58,6 @@ def login():
         # no such user ever existed
         else:
             user = User(pno)
-            user.attempts = 1
             db.session.add(user)
             db.session.commit()
 
@@ -66,7 +76,7 @@ def login():
 @app.route('/login2', methods = ['GET', 'POST'])
 def login2():
     if 'pno' not in session.keys():
-        flash('You can not come here without passing the first login phase')
+        flash('enter pno first')
         return redirect(url_for('login'))
 
     form = NameForm()
@@ -83,12 +93,12 @@ def login2():
 @app.route('/login3', methods = ['GET', 'POST'])
 def login3():
     if 'pno' not in session.keys():
-        flash('You can not come here without passing the first login phase')
+        flash('enter pno first')
         return redirect(url_for('login'))
 
     for key in ['firstname', 'lastname']:
         if key not in session.keys():
-            flash('You can not come here without passing the second login phase')
+            flash('enter name first')
             return redirect(url_for('login2'))
 
     form = PasswordForm()
@@ -108,10 +118,8 @@ def login3():
         db.session.commit()
 
         login_user(user)
-        r = Request.query.filter_by(request_addr = request.remote_addr).first()
-        r.attempts = 0
-        db.session.add(r)
-        db.session.commit()
+
+        remove_ban(request_obj = request.remote_addr)
 
         return redirect(url_for('index'))
     return render_template('login.html', form = form)
@@ -119,7 +127,7 @@ def login3():
 @app.route('/login4', methods = ['GET', 'POST'])
 def login4():
     if 'pno' not in session.keys():
-        flash('You can not come here without passing the first login phase')
+        flash('enter pno first')
         return redirect(url_for('login'))
 
     form = LoginForm()
@@ -131,14 +139,12 @@ def login4():
         if user.check_password(password):
             flash('welcome user {}'.format(user))
             login_user(user)
-            r = Request.query.filter_by(request_addr = request.remote_addr).first()
-            r.attempts = 0
-            db.session.add(r)
-            db.session.commit()
+
+            remove_ban(request = request.remote_addr)
 
             return redirect(url_for('index'))
-        flash("password does not match our db")
-        return redirect(url_for('login4'))
+        flash("wrong password")
+        return redirect(url_for('login'))
     return render_template('login.html', form = form)
 
 @app.route('/logout')
@@ -150,3 +156,11 @@ def logout():
 def error_handler(e):
     flash('not allowed to request more than 3 times')
     return redirect(url_for('index')), 200
+
+def remove_ban(request_obj):
+    r = Request.query.filter_by(request_addr = request_obj).first()
+    if r is not None:
+        r.attempts = 0
+        r.banned_until = None
+        db.session.add(r)
+        db.session.commit()
