@@ -20,9 +20,9 @@ def dropdb():
 
 @manager.command
 def add_user():
-    user = User('989197050256')
-    user.firstname = 'Meysam'
-    user.lastname = 'Azad'
+    user = User('989012345678')
+    user.firstname = 'Barack'
+    user.lastname = 'Obama'
     user.password = 'test'
     db.session.add(user)
     db.session.commit()
