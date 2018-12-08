@@ -43,3 +43,15 @@ python manage.py runserver
 
 And now you should be able to see the webpage from the following address:
 `localhost:5000`
+
+## Stop the project
+If you want to stop the app, simply press the following keys on your keyboard:
+`Ctrl + C`
+
+And after that, using the following command you can exit the environment:
+`deactovate`
+
+And if you ever wanted to comeback to the project, run the following command:
+`workon sana`
+
+Thanks for reading, feel free to pull, fork or star.
