@@ -29,10 +29,9 @@ After adding the lines from previous step, you should re-run your bashrc so that
 You most probably have the stable python 2.7 version, so no worries there.
 After doing the previous steps, the next 2 steps are easy as a peach.
 ```
-cd ~/Codes/Python/
+cd ~/Codes/Python/dev/
 git clone git@github.com:meysam81/sana.git
 mkproject sana
-mv ~/Codes/Python/sana/ ~/Codes/Python/dev/
 ```
 
 ## Run the Project
@@ -49,7 +48,7 @@ If you want to stop the app, simply press the following keys on your keyboard:
 `Ctrl + C`
 
 And after that, using the following command you can exit the environment:
-`deactovate`
+`deactivate`
 
 And if you ever wanted to comeback to the project, run the following command:
 `workon sana`
