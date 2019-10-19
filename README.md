@@ -13,8 +13,8 @@ Some lines must be added to `~/.bashrc`, so :
 ```
 mkdir -p ~/Codes/Python/dev ~/Codes/Python/envs
 cat << EOF >> ~/.bashrc
-export WORK_HOME=$HOME/Codes/python/envs
-export PROJECT_HOME=$HOME/Codes/python/dev
+export WORK_HOME=$HOME/Codes/Python/envs
+export PROJECT_HOME=$HOME/Codes/Python/dev
 . /usr/local/bin/virtualenvwrapper.sh
 EOF
 ```
