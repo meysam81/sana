@@ -1,7 +1,7 @@
 backports.shutil-get-terminal-size==1.0.0
 Click==7.0
 decorator==4.3.0
-enum34==1.1.6
+enum34==1.1.10
 Flask==1.0.2
 Flask-Login==0.4.1
 Flask-Script==2.0.6
